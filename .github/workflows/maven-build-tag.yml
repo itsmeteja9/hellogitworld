@@ -3,7 +3,7 @@ name: Maven Build and Tag
 on:
   push:
     branches:
-      - Master   # You can change this to your default branch or any other branch you want
+      - Master   # You can change this to your default branch or any other branch you want to
 
 jobs:
   build:
