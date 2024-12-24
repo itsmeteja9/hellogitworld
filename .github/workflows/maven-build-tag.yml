@@ -1,0 +1,51 @@
+name: Maven Build and Tag
+
+on:
+  push:
+    branches:
+      - main   # You can change this to your default branch or any other branch you want
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Java JDK
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adoptopenjdk'
+
+      # Cache Maven dependencies (optional, for speed)
+      - name: Cache Maven dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Run Maven build
+      - name: Build with Maven
+        run: mvn clean install
+
+      # Get the version from pom.xml or other logic (e.g., versioning via Git tags)
+      - name: Get version
+        id: get_version
+        run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+      # Create a new Git tag
+      - name: Create Tag
+        run: |
+          TAG="v${{ env.VERSION }}"
+          git tag $TAG
+          git push origin $TAG
+
+      # Optional: Output the created tag to the Actions logs
+      - name: Show created tag
+        run: echo "Created Tag: $TAG"
