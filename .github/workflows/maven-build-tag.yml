@@ -3,7 +3,7 @@ name: Maven Build and Tag
 on:
   push:
     branches:
-      - Master   # You can change this to your default branch or any other branch you want to
+      - master   # You can change this to your default branch or any other branch you want to
 
 jobs:
   build:
@@ -45,7 +45,3 @@ jobs:
           TAG="v${{ env.VERSION }}"
           git tag $TAG
           git push origin $TAG
-
-      # Optional: Output the created tag to the Actions logs
-      - name: Show created tag
-        run: echo "Created Tag: $TAG"
