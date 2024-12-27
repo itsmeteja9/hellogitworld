@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    tools {
+        jdk 'JDK8'      // Define JDK version to use
+        maven 'Maven 3.6.3' // Define Maven version
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/itsmeteja9/hellogitworld.git'  // Your GitHub repo URL
+            }
+        }
+
+        stage('Build and Test') {
+            steps {
+                // Run Maven to compile and run tests
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Publish Test Results') {
+            steps {
+                // Publish test results using JUnit
+                junit '**/target/test-classes/TEST-*.xml'
+            }
+        }
+
+        stage('Publish Code Coverage') {
+            steps {
+                // Publish code coverage using JaCoCo
+                jacoco execPattern: '**/target/*.exec', classPattern: '**/target/classes', sourcePattern: '**/src/main/java', exclusionPattern: '**/test/**'
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean workspace after build is complete
+            cleanWs()
+        }
+    }
+}
