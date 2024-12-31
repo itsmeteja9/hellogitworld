@@ -2,42 +2,46 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk-17'     // Correct JDK version name here
-        maven 'Maven-3.9.9' // Use the correct Maven version name
+        jdk 'jdk-17'        // Set the JDK version you want to use
+        maven 'Maven-3.9.9'  // Set the Maven version you want to use
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/itsmeteja9/hellogitworld.git'  // Your GitHub repo URL
+                // Clone the repository from GitHub
+                git 'https://github.com/itsmeteja9/hellogitworld.git'  // Replace with your repository URL
             }
         }
 
         stage('Build and Test') {
             steps {
-                // Run Maven to compile and run tests
-                sh 'mvn clean install'
+                // Run Maven clean install to compile the code and run tests
+                bat 'mvn clean install'
             }
         }
 
-        stage('Publish Test Results') {
+        stage('Publish Unit Test Results') {
             steps {
-                // Publish test results using JUnit
-                junit '**/target/test-classes/TEST-*.xml'
+                // Publish the JUnit test results from the correct directory
+                junit '**/target/surefire-reports/TEST-*.xml'  // Adjusted to the default surefire-reports location
             }
         }
 
-        stage('Publish Code Coverage') {
+        stage('Publish JaCoCo Coverage Report') {
             steps {
-                // Publish code coverage using JaCoCo
-                jacoco execPattern: '**/target/*.exec', classPattern: '**/target/classes', sourcePattern: '**/src/main/java', exclusionPattern: '**/test/**'
+                // Publish the JaCoCo coverage report
+                jacoco execPattern: '**/target/jacoco.exec', 
+                        classPattern: '**/target/classes', 
+                        sourcePattern: '**/src/main/java', 
+                        exclusionPattern: '**/test/**'
             }
         }
     }
 
     post {
         always {
-            // Clean workspace after build is complete
+            // Clean the workspace after the build
             cleanWs()
         }
     }
