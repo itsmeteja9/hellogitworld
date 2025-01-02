@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk-17'        // Set the JDK version you want to use
-        maven 'Maven-3.9.9'  // Set the Maven version you want to use
+        jdk 'jdk-17'        
+        maven 'Maven-3.9.9'  
     }
 
     stages {
         stage('Checkout') {
             steps {
                 // Clone the repository from GitHub
-                git 'https://github.com/itsmeteja9/hellogitworld.git'  // Replace with your repository URL
+                git 'https://github.com/itsmeteja9/hellogitworld.git' 
             }
         }
 
